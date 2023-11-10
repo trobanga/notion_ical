@@ -42,7 +42,7 @@ impl Event {
     pub fn to_ical<S: Into<String>>(&self, timezone: S) -> IcalEvent {
         let event = IcalEventBuilder::tzid(timezone)
             .uid(self.id.clone())
-            .changed_utc(self.changed.to_string());
+            .changed_utc(fmt_datetime(&DateOrDateTime::DateTime(self.changed)));
 
         let start = fmt_datetime(&self.start);
         let end = match &self.end {
