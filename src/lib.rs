@@ -18,6 +18,7 @@ mod event;
 
 pub use event::Event;
 
+#[derive(Clone)]
 pub struct NotionIcal {
     db_id: DatabaseId,
     ical_prod_id: String,
