@@ -101,12 +101,7 @@ impl NotionIcal {
         Ok(users.results)
     }
 
-    pub async fn calendar_for_user<S: AsRef<str>>(
-        &self,
-        user: S,
-        token: S,
-        uri: Option<String>,
-    ) -> Result<String> {
+    pub async fn calendar_for_user<S: AsRef<str>>(&self, user: S) -> Result<String> {
         let events = self.future_events_for_user(user.as_ref()).await?;
         calendar::generate_calendar(events, &self.ical_prod_id, &self.ical_timezone)
     }
