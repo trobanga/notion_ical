@@ -39,8 +39,8 @@ impl TryFrom<Page> for Event {
 }
 
 impl Event {
-    pub fn to_ical<S: Into<String>>(&self, timezone: S) -> IcalEvent {
-        let event = IcalEventBuilder::tzid(timezone)
+    pub fn to_ical(&self) -> IcalEvent {
+        let event = IcalEventBuilder::tzid("UTC")
             .uid(self.id.clone())
             .changed_utc(fmt_datetime(&DateOrDateTime::DateTime(self.changed)));
 

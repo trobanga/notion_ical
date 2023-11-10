@@ -22,23 +22,16 @@ pub use event::Event;
 pub struct NotionIcal {
     db_id: DatabaseId,
     ical_prod_id: String,
-    ical_timezone: String,
     notion_api: NotionApi,
 }
 
 impl NotionIcal {
-    pub fn new(
-        api_token: String,
-        db_id: &str,
-        ical_prod_id: String,
-        ical_timezone: String,
-    ) -> Result<Self> {
+    pub fn new(api_token: String, db_id: &str, ical_prod_id: String) -> Result<Self> {
         let notion_api = NotionApi::new(api_token, None)?;
         let db_id = DatabaseId::from_str(db_id)?;
         Ok(Self {
             db_id,
             ical_prod_id,
-            ical_timezone,
             notion_api,
         })
     }
@@ -104,7 +97,7 @@ impl NotionIcal {
 
     pub async fn calendar_for_user<S: AsRef<str>>(&self, user: S) -> Result<String> {
         let events = self.future_events_for_user(user.as_ref()).await?;
-        calendar::generate_calendar(events, &self.ical_prod_id, &self.ical_timezone)
+        calendar::generate_calendar(events, &self.ical_prod_id)
     }
 }
 #[cfg(test)]
@@ -118,7 +111,6 @@ mod tests {
     use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
     #[tokio::test]
-    #[ignore]
     async fn test() -> anyhow::Result<()> {
         dotenv::dotenv()?;
 
@@ -137,18 +129,17 @@ mod tests {
             )?,
             "db_id",
             "prod_id".to_string(),
-            "timezone".to_string(),
         )?;
 
         let users = notion_ical.list_users().await?;
+        tracing::debug!(?users);
         let user = &users[0];
         let user_id = user.id().value();
-        tracing::debug!(?user);
         let events = notion_ical.future_events_for_user(user_id).await?;
 
         tracing::info!(?events);
 
-        let cal = calendar::generate_calendar(events, "prod id", "Europe/Berlin")?;
+        let cal = calendar::generate_calendar(events, "prod id")?;
         tracing::info!(cal);
         Ok(())
     }
@@ -170,7 +161,7 @@ mod tests {
 
         let mock_server = MockServer::start().await;
         let uri = mock_server.uri();
-        let notion_api = NotionApi::new(
+        let _notion_api = NotionApi::new(
             std::env::var("NOTION_API_TOKEN").context(
                 "No Notion API token found in either the environment variable \
                         `NOTION_API_TOKEN` or the config file!",
