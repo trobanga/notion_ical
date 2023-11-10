@@ -44,9 +44,9 @@ impl Event {
             .uid(self.id.clone())
             .changed_utc(self.changed.to_string());
 
-        let start = self.fmt_datetime(&self.start);
+        let start = fmt_datetime(&self.start);
         let end = match &self.end {
-            Some(date) => self.fmt_datetime(date),
+            Some(date) => fmt_datetime(date),
             None => String::new(),
         };
         let event = match self.start {
@@ -64,11 +64,26 @@ impl Event {
             .set(ical_property!("SUMMARY", &self.title.clone()))
             .build()
     }
+}
 
-    fn fmt_datetime(&self, dt: &DateOrDateTime) -> String {
-        match dt {
-            DateOrDateTime::Date(date) => date.to_string(),
-            DateOrDateTime::DateTime(dt) => dt.to_rfc3339(),
-        }
+fn fmt_datetime(dt: &DateOrDateTime) -> String {
+    match dt {
+        DateOrDateTime::Date(date) => date.format("%Y%m%d").to_string(),
+        DateOrDateTime::DateTime(dt) => dt.format("%Y%m%dT%H%M%SZ").to_string(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::event::fmt_datetime;
+    use notion::models::properties::DateOrDateTime;
+
+    #[test]
+    fn format_datetime() {
+        use chrono::prelude::*;
+
+        let date_time: DateTime<Utc> = Utc.with_ymd_and_hms(2023, 11, 15, 11, 00, 00).unwrap();
+        let formatted = fmt_datetime(&DateOrDateTime::DateTime(date_time));
+        assert_eq!(formatted, "20231115T110000Z");
     }
 }

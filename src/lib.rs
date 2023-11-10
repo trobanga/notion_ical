@@ -118,6 +118,7 @@ mod tests {
     use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
     #[tokio::test]
+    #[ignore]
     async fn test() -> anyhow::Result<()> {
         dotenv::dotenv()?;
 
