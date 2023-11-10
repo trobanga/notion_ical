@@ -44,9 +44,9 @@ impl Event {
             .uid(self.id.clone())
             .changed_utc(self.changed.to_string());
 
-        let start = format!("{}", self.start);
+        let start = self.fmt_datetime(&self.start);
         let end = match &self.end {
-            Some(date) => format!("{date}"),
+            Some(date) => self.fmt_datetime(date),
             None => String::new(),
         };
         let event = match self.start {
@@ -63,5 +63,12 @@ impl Event {
         event
             .set(ical_property!("SUMMARY", &self.title.clone()))
             .build()
+    }
+
+    fn fmt_datetime(&self, dt: &DateOrDateTime) -> String {
+        match dt {
+            DateOrDateTime::Date(date) => date.to_string(),
+            DateOrDateTime::DateTime(dt) => dt.to_rfc3339(),
+        }
     }
 }
