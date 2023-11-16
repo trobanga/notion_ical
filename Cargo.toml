@@ -3,11 +3,15 @@ name = "notion-ical"
 version = "0.1.0"
 edition = "2021"
 
+# [features]
+# spin = []
+
+
 [dependencies]
 anyhow = "1.0.75"
 chrono = "0.4.31"
 ical = { version = "0.8.0", features = ["generator"] }
-notion = { git = "https://github.com/trobanga/notion.git", branch = "reqwest"  }
+notion = { git = "https://github.com/trobanga/notion.git" }
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0.108"
 tracing = "0.1.37"

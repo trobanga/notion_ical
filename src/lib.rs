@@ -27,7 +27,7 @@ pub struct NotionIcal {
 
 impl NotionIcal {
     pub fn new(api_token: String, db_id: &str, ical_prod_id: String) -> Result<Self> {
-        let notion_api = NotionApi::new(api_token, None)?;
+        let notion_api = NotionApi::new(api_token)?;
         let db_id = DatabaseId::from_str(db_id)?;
         Ok(Self {
             db_id,
