@@ -119,7 +119,7 @@ mod tests {
         }
         tracing_subscriber::registry()
             .with(EnvFilter::from_default_env())
-            .with(tracing_subscriber::fmt::layer())
+            .with(tracing_subscriber::fmt::layer().pretty())
             .init();
 
         let notion_ical = NotionIcal::new(
@@ -127,7 +127,7 @@ mod tests {
                 "No Notion API token found in either the environment variable \
                         `NOTION_API_TOKEN` or the config file!",
             )?,
-            "db_id",
+            &env::var("NOTION_DB_ID").unwrap(),
             "prod_id".to_string(),
         )?;
 
@@ -160,14 +160,11 @@ mod tests {
             .init();
 
         let mock_server = MockServer::start().await;
-        let uri = mock_server.uri();
-        let _notion_api = NotionApi::new(
-            std::env::var("NOTION_API_TOKEN").context(
-                "No Notion API token found in either the environment variable \
+        // let uri = mock_server.uri();
+        let _notion_api = NotionApi::new(std::env::var("NOTION_API_TOKEN").context(
+            "No Notion API token found in either the environment variable \
                         `NOTION_API_TOKEN` or the config file!",
-            )?,
-            Some(uri.into()),
-        )?;
+        )?)?;
 
         tracing::info!("ask for events");
 

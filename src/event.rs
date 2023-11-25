@@ -62,7 +62,20 @@ impl Event {
 
         event
             .set(ical_property!("SUMMARY", &self.title.clone()))
+            .set(ical_property!("DESCRIPTION", self.description()))
             .build()
+    }
+
+    fn description(&self) -> String {
+        // TODO: title: replace space with -
+        // TODO: id: rm -
+        let title = self.title.clone();
+        let title = title.replace(' ', "-");
+
+        let id = self.id.clone();
+        let id = id.replace('-', "");
+
+        format!("https://www.notion.so/{}-{}", title, id)
     }
 }
 
