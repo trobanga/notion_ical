@@ -62,11 +62,11 @@ impl Event {
 
         event
             .set(ical_property!("SUMMARY", &self.title.clone()))
-            .set(ical_property!("DESCRIPTION", self.description()))
+            .set(ical_property!("DESCRIPTION", self.link_to_notion_event()))
             .build()
     }
 
-    fn description(&self) -> String {
+    fn link_to_notion_event(&self) -> String {
         let title = self.title.clone();
         let title = title.replace(' ', "-");
 
