@@ -67,8 +67,6 @@ impl Event {
     }
 
     fn description(&self) -> String {
-        // TODO: title: replace space with -
-        // TODO: id: rm -
         let title = self.title.clone();
         let title = title.replace(' ', "-");
 
