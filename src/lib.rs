@@ -91,7 +91,6 @@ impl NotionIcal {
 
     pub async fn list_users(&self) -> Result<Vec<User>> {
         let users = self.notion_api.list_users().await?;
-        tracing::debug!(?users);
         Ok(users.results)
     }
 
